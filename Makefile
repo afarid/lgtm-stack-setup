@@ -1,8 +1,14 @@
-add-helm-repo:
+creat-kind:
+	@echo "Creating Kind Cluster..."
+	@kind create cluster --config=./kind-config.yaml
+	@echo "Kind Cluster created successfully"
+add-helm-repos:
+	@echo "Adding Grafana Helm Repo..."
 	@helm repo add grafana https://grafana.github.io/helm-charts
 	@echo "Adding OpenTelemetry Helm Repo..."
 	@helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 	@echo "Helm Repos added successfully"
+
 install-grafana:
 	@echo "Installing Grafana..."
 	@helm upgrade -i  grafana grafana/grafana -f ./values/grafana.yaml  --create-namespace
@@ -27,5 +33,5 @@ install-otel-collector:
 	@echo "Installing OpenTelemetry Collector..."
 	@helm upgrade -i  opentelemetry-collector open-telemetry/opentelemetry-collector -f ./values/opentelemetry-collector.yaml
 	@echo "OpenTelemetry Collector installed successfully"
-install-all: install-grafana install-mimir install-tempo install-loki install-otel-collector
+install-all: add-helm-repos install-grafana install-mimir install-tempo install-loki install-otel-collector
 	@echo "All components installed successfully"
