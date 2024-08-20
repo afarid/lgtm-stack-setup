@@ -1,0 +1,25 @@
+## to enable service graph https://grafana.com/docs/tempo/latest/configuration/#overrides
+global_overrides:
+  defaults:
+    metrics_generator:
+      processors:
+        - service-graphs
+        - span-metrics
+overrides:
+  defaults:
+    metrics_generator:
+      processors:
+        - service-graphs
+        - span-metrics
+traces:
+  otlp:
+    http:
+      enabled: true
+    grpc:
+      enabled: true
+metricsGenerator:
+  enabled: true
+  config:
+    storage:
+      remote_write:
+        - url: "http://mimir-nginx/api/v1/push"

@@ -1,0 +1,55 @@
+# Just to enable the service to accessed in local development
+hostNetwork: false
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+mode: deployment
+config:
+  exporters:
+    debug/detailed:
+      verbosity: detailed
+    debug/basic:
+      verbosity: basic
+    loki:
+      endpoint: http://loki-loki-distributed-distributor:3100/loki/api/v1/push
+    otlphttp/tempo:
+      endpoint: http://tempo-distributor:4318
+    otlphttp/mimir:
+      endpoint: http://mimir-nginx/otlp
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+  service:
+    telemetry:
+      metrics:
+        address: 0.0.0.0:8888
+    extensions:
+      - health_check
+    pipelines:
+      logs:
+        exporters:
+          - loki
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+      metrics:
+        exporters:
+          - otlphttp/mimir
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp
+      traces:
+        exporters:
+          - otlphttp/tempo
+        processors:
+          - memory_limiter
+          - batch
+        receivers:
+          - otlp

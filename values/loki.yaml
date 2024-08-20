@@ -1,0 +1,5 @@
+loki:
+  structuredConfig:
+    limits_config:
+      ## to accept logs as otlp format
+      allow_structured_metadata: true

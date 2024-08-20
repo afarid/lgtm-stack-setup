@@ -1,0 +1,5 @@
+mimir:
+  structuredConfig:
+    limits:
+      ## https://grafana.com/docs/mimir/latest/manage/use-exemplars/store-exemplars/
+      max_global_exemplars_per_user: 100000
